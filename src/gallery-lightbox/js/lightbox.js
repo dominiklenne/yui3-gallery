@@ -38,44 +38,44 @@
 	Y.mix(
 		Node.prototype, {
 			/**
-		     * Display a node.
-		     *
-		     * @method show
-		     * @chainable
-		     */
+			 * Display a node.
+			 *
+			 * @method show
+			 * @chainable
+			 */
 			show: function () {
 				this.setStyle("display", "");
 				return this;
 			},
 			
 			/**
-		     * Hide a node.
-		     *
-		     * @method hide
-		     * @chainable
-		     */
+			 * Hide a node.
+			 *
+			 * @method hide
+			 * @chainable
+			 */
 			hide: function () {
 				this.setStyle("display", "none");
 				return this;
 			},
 			
 			/**
-		     * Check is a node is being shown. Specifically not called "visible"
-		     * so as not to confuse it with the visibility property.
-		     *
-		     * @method displayed
-		     * @return boolean
-		     */
+			 * Check is a node is being shown. Specifically not called "visible"
+			 * so as not to confuse it with the visibility property.
+			 *
+			 * @method displayed
+			 * @return boolean
+			 */
 			displayed: function() {
 				return this.getStyle("display") != "none";
 			},
 			
 			/**
-		     * Toggle the display of an element.
-		     *
-		     * @method toggle
-		     * @chainable
-		     */
+			 * Toggle the display of an element.
+			 *
+			 * @method toggle
+			 * @chainable
+			 */
 			toggle: function() {
 				this[this.displayed() ? "hide" : "show"]();
 				return this;
@@ -104,134 +104,134 @@
 	};
 	
 	/**
-     * The identity of the widget.
-     *
-     * @property Lightbox.NAME
-     * @type String
-     * @static
-     */
+	 * The identity of the widget.
+	 *
+	 * @property Lightbox.NAME
+	 * @type String
+	 * @static
+	 */
 	LB.NAME = LIGHTBOX;
 	
 	/**
-     * Static property used to define the default attribute configuration of
-     * the Widget.
-     *
-     * @property Lightbox.ATTRS
-     * @type Object
-     * @protected
-     * @static
-     */
+	 * Static property used to define the default attribute configuration of
+	 * the Widget.
+	 *
+	 * @property Lightbox.ATTRS
+	 * @type Object
+	 * @protected
+	 * @static
+	 */
 	LB.ATTRS = {
 		/**
-         * The selector to determine which anchors should be bound to the Lightbox
-         * instance.  If an anchor element is bound to Lightbox, it's content will
-         * be displayed in a modal panel rather than on a separate page.
-         *
-         * @attribute selector
-         * @type String
-         * @default &quot;a[rel^=lightbox]&quot;
-         */
+		 * The selector to determine which anchors should be bound to the Lightbox
+		 * instance.  If an anchor element is bound to Lightbox, it's content will
+		 * be displayed in a modal panel rather than on a separate page.
+		 *
+		 * @attribute selector
+		 * @type String
+		 * @default &quot;a[rel^=lightbox]&quot;
+		 */
 		selector: {
 			value: "a[rel^=lightbox]",
 			validator: L.isString
 		},
 		
 		/**
-         * The width of the border surrounding the displayed content.  This is used during
-         * resize operations.
-         *
-         * @attribute borderWidth
-         * @type Number
-         * @default 10
-         */
+		 * The width of the border surrounding the displayed content.  This is used during
+		 * resize operations.
+		 *
+		 * @attribute borderWidth
+		 * @type Number
+		 * @default 10
+		 */
 		borderWidth: {
 			value: 10,
 			validator: L.isNumber
 		},
 		
 		/**
-         * The amount of time (in seconds) for the overlay to take to appear when the
-         * Lightbox is displayed.
-         *
-         * @attribute overlayDuration
-         * @type Number
-         * @default 0.2
-         */
+		 * The amount of time (in seconds) for the overlay to take to appear when the
+		 * Lightbox is displayed.
+		 *
+		 * @attribute overlayDuration
+		 * @type Number
+		 * @default 0.2
+		 */
 		overlayDuration: {
 			value: 0.2,
 			validator: L.isNumber
 		},
 		
 		/**
-         * The opacity of the overlay element once it is displayed.  This value is used
-         * during animation so that the overlay appears to be eased in.
-         *
-         * @attribute overlayOpacity
-         * @type Number
-         * @default 0.8
-         */
+		 * The opacity of the overlay element once it is displayed.  This value is used
+		 * during animation so that the overlay appears to be eased in.
+		 *
+		 * @attribute overlayOpacity
+		 * @type Number
+		 * @default 0.8
+		 */
 		overlayOpacity: {
 			value: 0.8,
 			validator: L.isNumber
 		},
 		
 		/**
-         * The amount of time (in seconds) each reisze animation should take.  This is used
-         * specifically during Lightbox height and width resize transformations.
-         *
-         * @attribute resizeDuration
-         * @type Number
-         * @default 0.5
-         */
+		 * The amount of time (in seconds) each reisze animation should take.  This is used
+		 * specifically during Lightbox height and width resize transformations.
+		 *
+		 * @attribute resizeDuration
+		 * @type Number
+		 * @default 0.5
+		 */
 		resizeDuration: {
 			value: 0.5,
 			validator: L.isNumber
 		},
 		
 		/**
-         * Whether or the Lighbox module should use animation when displaying, changing images,
-         * and hiding.  If set to false, the values of attributes that control animation settings
-         * are ignored.
-         *
-         * @attribute anim
-         * @type boolean
-         * @default !L.isUndefined(Y.Anim)
-         */
+		 * Whether or the Lighbox module should use animation when displaying, changing images,
+		 * and hiding.  If set to false, the values of attributes that control animation settings
+		 * are ignored.
+		 *
+		 * @attribute anim
+		 * @type boolean
+		 * @default !L.isUndefined(Y.Anim)
+		 */
 		anim: {
 			value: !L.isUndefined(Y.Anim),
 			validator: L.isBoolean
 		},
 		
 		/**
-         * A managed array of images that Lightbox can currently cycle through. The size of this array
-         * is defined by the number of images in a particular image group.  This array determines
-         * whether or not there are next and previous options. It's initialized when an image
-         * is clicked on.
-         *
-         * @attribute imageArray
-         * @type Array
-         */
+		 * A managed array of images that Lightbox can currently cycle through. The size of this array
+		 * is defined by the number of images in a particular image group.  This array determines
+		 * whether or not there are next and previous options. It's initialized when an image
+		 * is clicked on.
+		 *
+		 * @attribute imageArray
+		 * @type Array
+		 */
 		imageArray: {
 			validator: L.isArray
 		},
 		
 		/**
-         * The index of the currently displayed image in the "imageArray."
-         *
-         * @attribute activeImage
-         * @type Number
-         */
+		 * The index of the currently displayed image in the "imageArray."
+		 *
+		 * @attribute activeImage
+		 * @type Number
+		 */
 		activeImage: {
 			validator: L.isNumber
 		},
 		
 		/**
-         * Set of strings to be used when displaying content.  These can be customized
-         * (i.e. for internationalization) if necessary.
-         *
-         * @attribute strings
-         * @type Object
-         */
+		 * Set of strings to be used when displaying content.  These can be customized
+		 * (i.e. for internationalization) if necessary.
+		 *
+		 * @attribute strings
+		 * @type Object
+		 */
 		strings: {
 			value : {
 				labelImage: "Image",
@@ -242,49 +242,52 @@
 	
 	Y.extend(LB, Y.Base, {
 		/**
-	     * Construction logic executed during Lightbox instantiation. This
-	     * builds and inserts the markup necessary for the Lightbox to function
-	     * as well as binds all of the elements to the necessary events to make
-	     * the Lightbox functional.
-	     *
-	     * @method initializer
-	     * @param config (Object) set of configuration name/value pairs
-	     * @protected
-	     */
+		 * Construction logic executed during Lightbox instantiation. This
+		 * builds and inserts the markup necessary for the Lightbox to function
+		 * as well as binds all of the elements to the necessary events to make
+		 * the Lightbox functional.
+		 *
+		 * @method initializer
+		 * @param config (Object) set of configuration name/value pairs
+		 * @protected
+		 */
 		initializer: function (config) {
 			// Code inserts html at the bottom of the page that looks similar to this:
-	        //
-	        //  <div id="overlay"></div>
-	        //  <div id="lightbox">
-	        //      <div id="outerImageContainer">
-	        //          <div id="imageContainer">
-	        //              <img id="lightboxImage">
-	        //              <div style="" id="hoverNav">
-	        //                  <a href="#" id="prevLink"></a>
-	        //                  <a href="#" id="nextLink"></a>
-	        //              </div>
-	        //              <div id="loading"></div>
-	        //          </div>
-	        //      </div>
-	        //      <div id="imageDataContainer">
-	        //          <div id="imageData">
-	        //              <div id="imageDetails">
-	        //                  <span id="caption"></span>
-	        //                  <span id="numberDisplay"></span>
-	        //              </div>
-	        //              <div id="bottomNav">
-	        //                  <a href="#" id="bottomNavClose"></a>
-	        //              </div>
-	        //          </div>
-	        //      </div>
-	        //  </div>
+			//
+			//  <div id="overlay"></div>
+			//  <div id="lightbox">
+			//      <div id="outerImageContainer">
+			//          <div id="imageContainer">
+			//              <img id="lightboxImage">
+			//              <div style="" id="hoverNav">
+			//                  <a href="#" id="prevLink"></a>
+			//                  <a href="#" id="nextLink"></a>
+			//              </div>
+			//              <div id="loading"></div>
+			//          </div>
+			//      </div>
+			//      <div id="imageDataContainer">
+			//          <div id="imageData">
+			//              <div id="imageDetails">
+			//                  <span id="caption"></span>
+			//					<span id="originalLink">
+			//						<a href="#">Original Link</a>
+			//					</span>
+			//                  <span id="numberDisplay"></span>
+			//              </div>
+			//              <div id="bottomNav">
+			//                  <a href="#" id="bottomNavClose"></a>
+			//              </div>
+			//          </div>
+			//      </div>
+			//  </div>
 
-	        var objBody = Y.one(document.body),
+			var objBody = Y.one(document.body),
 				create = Node.create;
 
 			objBody.append(create('<div id="overlay"></div>'));
 		
-	        objBody.append(create('<div id="lightbox"></div>')
+			objBody.append(create('<div id="lightbox"></div>')
 				.append(create('<div id="outerImageContainer"></div>')
 					.append(create('<div id="imageContainer"></div>')
 						.append(create('<img id="lightboxImage" />'))
@@ -299,6 +302,9 @@
 					.append(create('<div id="imageData"></div>')
 						.append(create('<div id="imageDetails"></div>')
 							.append(create('<span id="caption"></span>'))
+							.append(create('<span id="originalLink"></span>')
+								.append(create('<a href="#" target="_blank">Original Image</a>'))
+							)
 							.append(create('<span id="numberDisplay"></span>'))
 						)
 						.append(create('<div id="bottomNav"></div>')
@@ -326,8 +332,8 @@
 			
 			L.later(0, this, function () {
 				var ids = "overlay lightbox outerImageContainer imageContainer lightboxImage hoverNav prevLink nextLink loading " + 
-                	"imageDataContainer imageData imageDetails caption numberDisplay bottomNav bottomNavClose";
-            	
+					"imageDataContainer imageData imageDetails caption numberDisplay bottomNav bottomNavClose originalLink";
+				
 				Y.Array.each(ids.split(" "), function (element, index, array) {
 					this.addAttr(element, { value: Y.one("#" + element) });
 				}, this);
@@ -335,13 +341,13 @@
 		},
 		
 		/**
-	     * Display overlay and Lightbox.  If image is part of a set, it
-	     * adds those images to an array so that a user can navigate between them.
-	     *
-	     * @method start
-	     * @param selectedLink { Y.Node } the node whose content should be displayed
-	     * @protected
-	     */
+		 * Display overlay and Lightbox.  If image is part of a set, it
+		 * adds those images to an array so that a user can navigate between them.
+		 *
+		 * @method start
+		 * @param selectedLink { Y.Node } the node whose content should be displayed
+		 * @protected
+		 */
 		start: function (selectedLink) {
 			Y.all("select, object, embed").each(function() {
 				this.setStyle("visibility", "hidden");
@@ -362,14 +368,19 @@
 			}
 			
 			var imageArray = [],
-				imageNum = 0;
+				imageNum = 0,
+				gallery;
 			
 			if (selectedLink.get("rel") === LIGHTBOX) {
 				// If image is NOT part of a set, add single image to imageArray
 				imageArray.push([selectedLink.get("href"), selectedLink.get("title")]);
 			} else {
+				//work around for http://yuilibrary.com/projects/yui3/ticket/2528799
+				gallery = selectedLink.get("rel").match(/\[(.*)\]/)[1];
+				
 				// If image is part of a set...
-				Y.all(selectedLink.get("tagName") + '[href][rel="' + selectedLink.get("rel") + '"]').each(function () {
+				//Y.all(selectedLink.get("tagName") + '[href][rel="' + selectedLink.get("rel") + '"]').each(function () {
+				Y.all(selectedLink.get("tagName") + "[href][rel*=" + gallery + "]").each(function () {
 					imageArray.push([this.get("href"), this.get("title")]);
 				});
 				
@@ -386,11 +397,11 @@
 		},
 		
 		/**
-	     * Hide the overlay and Lightbox and unbind any event listeners.
-	     *
-	     * @method end
-	     * @protected
-	     */
+		 * Hide the overlay and Lightbox and unbind any event listeners.
+		 *
+		 * @method end
+		 * @protected
+		 */
 		end: function () {
 			this._disableKeyboardNav();
 			this.get(LIGHTBOX).hide();
@@ -416,12 +427,12 @@
 		},
 		
 		/**
-	     * Helper method responsible for binding listener to the page to process
-	     * lightbox anchors and images.
-	     *
-	     * @method _bindStartListener
-	     * @private
-	     */
+		 * Helper method responsible for binding listener to the page to process
+		 * lightbox anchors and images.
+		 *
+		 * @method _bindStartListener
+		 * @private
+		 */
 		_bindStartListener: function () {
 			Y.delegate(CLICK, Y.bind(function (evt) {
 				evt.halt();
@@ -430,13 +441,13 @@
 		},
 		
 		/**
-	     * Display the selected index by first showing a loading screen, preloading it
-	     * and displaying it once it has been loaded.
-	     *
-	     * @method _changeImage
-	     * @param imageNum { Number } the index of the image to be displayed
-	     * @private
-	     */
+		 * Display the selected index by first showing a loading screen, preloading it
+		 * and displaying it once it has been loaded.
+		 *
+		 * @method _changeImage
+		 * @param imageNum { Number } the index of the image to be displayed
+		 * @private
+		 */
 		_changeImage: function (imageNum) {
 			this.set(ACTIVE_IMAGE, imageNum);
 			
@@ -459,21 +470,38 @@
 			
 			// Once image is preloaded, resize image container
 			imagePreloader.onload = Y.bind(function () {
-				this.get("lightboxImage").set("src", this.get(IMAGE_ARRAY)[imageNum][0]);
-				this._resizeImageContainer(imagePreloader.width, imagePreloader.height);
+				var img = this.get("lightboxImage"), 
+					winHeight = img.get('winHeight'),
+					winWidth = img.get('winWidth'),
+					width = (imagePreloader.width < (winWidth - 100)) ? imagePreloader.width : false,
+					height = (imagePreloader.height < (winHeight - 100)) ? imagePreloader.height : false,
+					scale;
+				
+				//if img was too big in either direction
+				if(!width || !height) {
+					scale = Math.min((winWidth / imagePreloader.width), (winHeight / imagePreloader.height));
+					
+					width = Math.floor(scale * imagePreloader.width);
+					height = Math.floor(scale * imagePreloader.height);
+				}
+				
+				img.set("src", this.get(IMAGE_ARRAY)[imageNum][0]);
+				img.set("width", width);
+				img.set("height", height);
+				this._resizeImageContainer(width, height);
 			}, this);
 			imagePreloader.src = this.get(IMAGE_ARRAY)[imageNum][0];
 		},
 		
 		/**
-	     * Resize the image container so it is large enough to display the entire image.
-	     * Once this is complete it will delegate to another method to actually display the image.
-	     *
-	     * @method _resizeImageContainer
-	     * @param imgWidth { Number } image width
-	     * @param imgWidth { Number } image height
-	     * @private
-	     */
+		 * Resize the image container so it is large enough to display the entire image.
+		 * Once this is complete it will delegate to another method to actually display the image.
+		 *
+		 * @method _resizeImageContainer
+		 * @param imgWidth { Number } image width
+		 * @param imgWidth { Number } image height
+		 * @private
+		 */
 		_resizeImageContainer: function (imgWidth, imgHeight) {
 			// Get current width and height
 			var outerImageContainer = this.get("outerImageContainer"),
@@ -533,11 +561,11 @@
 		},
 		
 		/**
-	     * Display the currently loaded image and then try to preload any neighboring images.
-	     *
-	     * @method _showImage
-	     * @private
-	     */
+		 * Display the currently loaded image and then try to preload any neighboring images.
+		 *
+		 * @method _showImage
+		 * @private
+		 */
 		_showImage: function () {
 			this.get("loading").hide();
 			
@@ -565,17 +593,18 @@
 		},
 		
 		/**
-	     * Use the title of the image as a caption and display information
-	     * about the current image and it's location in an image set (if applicable).
-	     *
-	     * @method _updateDetails
-	     * @private
-	     */
+		 * Use the title of the image as a caption and display information
+		 * about the current image and it's location in an image set (if applicable).
+		 *
+		 * @method _updateDetails
+		 * @private
+		 */
 		_updateDetails: function () {
 			
 			var imageArray = this.get(IMAGE_ARRAY),
 				activeImage = this.get(ACTIVE_IMAGE),
-				caption = imageArray[activeImage][1];
+				caption = imageArray[activeImage][1],
+				resized = /-\d+x\d+/, a;
 			
 			// If caption is not null
 			if (caption !== "") {
@@ -585,6 +614,13 @@
 			// If image is part of a set display "Image x of x"
 			if (imageArray.length > 1) {
 				this.get("numberDisplay").setContent(this.get("strings.labelImage") + " " + (activeImage + 1) + " " + this.get("strings.labelOf") + "  " + imageArray.length).show();
+			}
+			
+			if(resized.test(imageArray[activeImage][0])) {
+				this.get("originalLink").get('firstChild').setAttribute("href", imageArray[activeImage][0].replace(resized, ""))
+														  .removeClass("hide");
+			} else {
+				this.get("originalLink").get('firstChild').addClass("hide");
 			}
 			
 			var imageDataContainer = this.get("imageDataContainer");
@@ -616,12 +652,12 @@
 		},
 		
 		/**
-	     * Update the navigation elements to display forward and/or backward
-	     * links if they're appropriate.
-	     *
-	     * @method _updateNav
-	     * @private
-	     */
+		 * Update the navigation elements to display forward and/or backward
+		 * links if they're appropriate.
+		 *
+		 * @method _updateNav
+		 * @private
+		 */
 		_updateNav: function () {
 			var activeImage = this.get(ACTIVE_IMAGE);
 			
@@ -641,31 +677,31 @@
 		},
 		
 		/**
-	     * Enable keyboard shortcuts for closing Lightbox or switching images.
-	     *
-	     * @method _enableKeyboardNav
-	     * @private
-	     */
+		 * Enable keyboard shortcuts for closing Lightbox or switching images.
+		 *
+		 * @method _enableKeyboardNav
+		 * @private
+		 */
 		_enableKeyboardNav: function () {
 			Y.get(document.body).on("keydown", this._keyboardAction, this);
 		},
 		
 		/**
-	     * Disable keyboard shortcuts for closing Lightbox or switching images.
-	     *
-	     * @method _disableKeyboardNav
-	     * @private
-	     */
+		 * Disable keyboard shortcuts for closing Lightbox or switching images.
+		 *
+		 * @method _disableKeyboardNav
+		 * @private
+		 */
 		_disableKeyboardNav: function () {
 			Y.get(document.body).unsubscribe("keydown", this._keyboardAction);
 		},
 		
 		/**
-	     * Handle key strokes to allow for users to close Lightbox or switch images.
-	     *
-	     * @method _keyboardAction
-	     * @private
-	     */
+		 * Handle key strokes to allow for users to close Lightbox or switch images.
+		 *
+		 * @method _keyboardAction
+		 * @private
+		 */
 		_keyboardAction: function (evt) {
 			var keyCode = evt.keyCode,
 				escapeKey = 27,
@@ -687,12 +723,12 @@
 		},
 		
 		/**
-	     * Preload images that are adjacent to the current image, if they exist,
-	     * to reduce waiting time.
-	     *
-	     * @method _preloadNeighborImages
-	     * @private
-	     */
+		 * Preload images that are adjacent to the current image, if they exist,
+		 * to reduce waiting time.
+		 *
+		 * @method _preloadNeighborImages
+		 * @private
+		 */
 		_preloadNeighborImages: function () {
 			var activeImage = this.get(ACTIVE_IMAGE),
 				imageArray = this.get(IMAGE_ARRAY),
