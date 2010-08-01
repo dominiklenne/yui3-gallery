@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YUI3 SoundManager Module</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.1/build/reset-fonts-grids/reset-fonts-grids.css">
+    <link type="text/css" rel="stylesheet" href="style.css" />
+</head>
+<body lang="en-US" class="yui3-skin-sam">
+	
+    
+    <h1>gallery-soundmanager-player Tests (don't try running them locally)</h1>
+    <div id="console">&nbsp;</div>
+    
+    <div class="hide" id="test-container">
+        <a href="Skullcrusher_Mountain.mp3" id="testmp3">MP3!</a>
+    </div>
+    
+    <script type="text/javascript" src="http://yui.yahooapis.com/combo?3.1.1/build/yui/yui.js&3.1.1/build/loader/loader.js"></script>
+    <script type="text/javascript">
+        YUI_config = { 
+			combine : false,
+			filter : 'raw',
+            ignore : [ "skin-sam-widget" ],
+            modules : {
+                "gallery-soundmanager-player" : {
+                    fullpath : "../../../build/gallery-soundmanager-player/gallery-soundmanager-player.js",
+                    requires : [ 'base', 'widget', 'get', 'event', 'event-custom', 'event-mousenter', 'substitute' ]
+                },
+                
+                "player-tests" : {
+                    fullpath : "player-tests.js",
+                    requires : [ "gallery-soundmanager-player", "test", "node-event-simulate" ]
+                }
+            }
+        };
+        
+        YUI().use("console", "player-tests", function(Y) {
+            //create the console
+            new Y.Console({
+                height: "400px",
+                width: "100%",
+                style : "block"
+            }).render('#console');
+            
+            Y.Test.Runner.add(Y.SoundManager.PlayerTests);
+            Y.Test.Runner.run();
+        });
+    </script>
+</body>
+</html>

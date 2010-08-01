@@ -1,0 +1,83 @@
+html { background: #242424; }
+
+body { padding: 20px; }
+
+#test_links { position: absolute; bottom: 10px; left: 10px; color: #FF8000; }
+#test_links a { color: #8ac6f2; }
+#test_links a:hover { color: #00A0E0; }
+
+.hide { display: none; }
+
+h1 { font-size: 161.6%; font-weight: bold; color: #f6f3e8; text-align: left; }
+
+/* basic controls */
+.yui3-smplayer { margin: 10px 0 20px; background: #444; border: 2px solid #99968b; width: 300px; min-height: 26px; position: relative; 
+                 -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; cursor: pointer; cursor: hand; }
+.yui3-smplayer:focus,
+.yui3-smplayer:hover { border-color: #f6f3e8; }
+.yui3-smplayer .yui3-smplayer-bar { -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; cursor: pointer; cursor: hand; }
+.yui3-smplayer .yui3-smplayer-bar div { position: absolute; left: 0; top: 0; bottom: 0; width: 0; 
+                                        -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; }
+
+/* Song title */
+.yui3-smplayer .yui3-smplayer-title { color: #f6f3e8; text-decoration: none; font-weight: bold; position: absolute; top: 6px; left: 21px; right: 4px; 
+                                      height: 1.4em; font-size: 85%; z-index: 2; cursor: default; overflow: hidden; text-align: left; cursor: pointer; cursor: hand; }
+
+/* play/pause button */
+.yui3-smplayer .yui3-smplayer-play { position: absolute; width: 16px; height: 16px; overflow: hidden; text-indent: -500em; top: 5px; left: 2px;
+                                     background: url(img/controls.png) no-repeat; cursor: pointer; cursor: hand; }
+.yui3-smplayer-playing .yui3-smplayer-play { background-position: -16px 0; }
+.yui3-smplayer .yui3-smplayer-play:hover,
+.yui3-smplayer .yui3-smplayer-play:focus { background-position: 0 -16px; }
+.yui3-smplayer .yui3-smplayer-play:focus { outline-color: #f6f3e8; }
+.yui3-smplayer-playing .yui3-smplayer-play:hover,
+.yui3-smplayer-playing .yui3-smplayer-play:focus { background-position: -16px -16px; }
+
+/* scrubbing control */
+.yui3-smplayer-scrubber-on .yui3-smplayer-scrubber { background: #2d2d2d; position: absolute; top: 3px; left: 20px; right: 3px; height: 20px; z-index: 1; }
+.yui3-smplayer-scrubber-on .yui3-smplayer-scrubber .yui3-smplayer-loadbar { background: #8f8f8f; }
+.yui3-smplayer-scrubber-on .yui3-smplayer-scrubber .yui3-smplayer-playbar { background: #8ac6f2; }
+.yui3-smplayer-scrubber-on .yui3-smplayer-title { cursor: pointer; cursor: hand; right: 8px; }
+
+/* volume control */
+.yui3-smplayer-volume-on .yui3-smplayer-title { left: 40px; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-btn { width: 12px; height: 12px; position: absolute; top: 7px; left: 22px; text-indent: -500em; overflow: hidden;
+                                                     background: url(img/controls.png) no-repeat -32px 0; cursor: pointer; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-btn:focus { outline-color: #f6f3e8; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-half { background-position: -45px 0; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-zero { background-position: -56px 0; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume { position: absolute; bottom: 3px; left: 3px; right: 3px; height: 10px; background: #384048; display: none; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume .yui3-smplayer-volbar { background: #656565; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-open { min-height: 40px; }
+.yui3-smplayer-volume-on .yui3-smplayer-volume-open .yui3-smplayer-volume { display: block; }
+
+/* time control */
+.yui3-smplayer-time-on .yui3-smplayer-title { right: 75px; }
+.yui3-smplayer-time-on .yui3-smplayer-time { position: absolute; top: 6px; right: 4px; font-size: 85%; text-align: right; }
+.yui3-smplayer-time-on .yui3-smplayer-time .yui3-smplayer-elapsed { color: #a0a8b0; }
+.yui3-smplayer-time-on .yui3-smplayer-time .yui3-smplayer-separator { font-weight: bold; color: #cae682; }
+.yui3-smplayer-time-on .yui3-smplayer-time .yui3-smplayer-total { color: #857b6f; }
+
+/* scrubber & volume */
+.yui3-smplayer-scrubber-on,
+.yui3-smplayer-volume-on { cursor: default; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-volume-on .yui3-smplayer-scrubber { left: 38px; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-volume-on .yui3-smplayer-title { left: 42px; }
+
+/* scrubber & time */
+.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-time { top: 2px; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-time-on { min-height: 40px; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-title { left: 4px; top: 2px; right: 70px; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-play { top: 20px; }
+.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-scrubber { top: 18px; }
+
+/* scrubber & time & volume */
+.yui3-smplayer-volume-on.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-volume-btn { top: 22px; }
+.yui3-smplayer-volume-on.yui3-smplayer-scrubber-on.yui3-smplayer-time-on .yui3-smplayer-volume-open { min-height: 54px; }
+
+/* handle loading */
+.yui3-smplayer-loading,
+.yui3-smplayer-loading .yui3-smplayer-play { cursor: progress; }
+.yui3-smplayer-loading .yui3-smplayer-title,
+.yui3-smplayer-loading .yui3-smplayer-title:hover { color: #99968b; cursor: progress; }
+.yui3-smplayer-loading .yui3-smplayer-play:hover { background-position: 0 0; }
