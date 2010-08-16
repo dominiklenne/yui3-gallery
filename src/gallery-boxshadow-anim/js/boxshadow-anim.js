@@ -20,22 +20,23 @@ var shadowType = (function() {
     NUM = function(n) {
         return parseInt(n, 10);
     },
-    lengthRegex = /(\-?\d+(px)?)/,
+    lengthRegex = /(\-?[\d\.]+(px)?)/,
     colorRegex = /\s*(rgb\(.+\)|#\w{3,6}|[^#]?[a-z]{3,})\s*/i, //doesn't have to be exact!
     parseStyle = function(style) {
-        var lengths = [ 0, 0, 0 ,0 ],
-            out, pieces, tokens, length, i, l, t, tl, lc;
+        var defaultLengths = [ 0, 0, 0 ,0 ],
+            defaultColor = [ "rgb(0, 0, 0)", 0, 0, 0 ],
+            out, pieces, tokens, length, color, i, l, t, tl, lc;
         
-        if(style === "none") {
+        if(!style || style === "none") {
             return {
-                lengths : lengths,
-                color : [ "rgb(0, 0, 0)", 0, 0, 0 ],
+                lengths : defaultLengths,
+                color : defaultColor,
                 inset : false
             };
         }
         
         out = { 
-            lengths : lengths,
+            lengths : defaultLengths,
             inset : (style.indexOf("inset") != -1)
         };
         
@@ -62,7 +63,11 @@ var shadowType = (function() {
             }
         }
         
-        if(!out.color || !out.lengths.length) {
+        if(!out.color) {
+            out.color = defaultColor;
+        }
+        
+        if(!out.lengths.length) {
             Y.error("sending back bad output!");
         }
         
@@ -71,6 +76,8 @@ var shadowType = (function() {
 
 Y.Anim.behaviors.boxShadow = {
     set : function(anim, att, from, to, elapsed, duration, fn) {
+        var boxShadow;
+        
         from = parseStyle((typeof from == "object") ? from.getStyle(shadowType) : from);
         to = parseStyle((typeof to == "object") ? to.getStyle(shadowType) : to);
        
@@ -82,7 +89,7 @@ Y.Anim.behaviors.boxShadow = {
             Y.error("invalid from or to length definition");
         }
         
-        anim._node.setStyle(shadowType, 
+        boxShadow = 
             fn(elapsed, NUM(from.lengths[0]), NUM(to.lengths[0]) - NUM(from.lengths[0]), duration) + "px " +
             fn(elapsed, NUM(from.lengths[1]), NUM(to.lengths[1]) - NUM(from.lengths[1]), duration) + "px " +
             fn(elapsed, NUM(from.lengths[2]), NUM(to.lengths[2]) - NUM(from.lengths[2]), duration) + "px " +
@@ -92,11 +99,13 @@ Y.Anim.behaviors.boxShadow = {
                 Math.floor(fn(elapsed, NUM(from.color[2]), NUM(to.color[2]) - NUM(from.color[2]), duration)),
                 Math.floor(fn(elapsed, NUM(from.color[3]), NUM(to.color[3]) - NUM(from.color[3]), duration))
             ].join(', ') + ')' +
-            ((to.inset) ? "inset" : "")
-        );
+            ((to.inset) ? "inset" : "");
+        
+        anim._node.setStyle(shadowType, boxShadow);
     },
     
+    //emulate Y.Node.scrubVal behavior where we return a node reference
     get: function(anim, att) {
-        return anim._node.getComputedStyle(shadowType);
+        return anim._node.getComputedStyle(shadowType) || anim._node;
     }
 };
