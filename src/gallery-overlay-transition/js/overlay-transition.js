@@ -11,13 +11,14 @@ Y.Plugin.TransitionOverlay = Y.Base.create("overlayTransitionPlugin", Y.Plugin.B
 
         var host = this.get("host"),
             bb = host.get("boundingBox"),
-            duration = this.get("duration");
+            duration = this.get("duration"),
+            easing = this.get("easing");
         
         this.publish("start", { preventable : false });
         this.publish("end",   { preventable : false });
         
-        this._argsShow = Y.merge({ duration : duration }, this.get("show"));
-        this._argsHide = Y.merge({ duration : duration }, this.get("hide"));
+        this._argsShow = Y.merge({ duration : duration, easing : easing }, this.get("show"));
+        this._argsHide = Y.merge({ duration : duration, easing : easing }, this.get("hide"));
         
         //hack around some limitations in the transition module, also support both 3.2.0pr1 & 3.2.0 events (changed between them)
         bb.on([ "transition:start", "transitionstart" ], Y.bind(function(o) {
@@ -85,6 +86,7 @@ Y.Plugin.TransitionOverlay = Y.Base.create("overlayTransitionPlugin", Y.Plugin.B
     NS : "transitionPlugin",
     ATTRS : {
         duration : { value : 0.25 },
+        easing : { value : "ease-in" },
         
         styleOverride : { 
             value : true,

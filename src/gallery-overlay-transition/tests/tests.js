@@ -100,6 +100,7 @@ YUI.add("overlay-transition-tests", function(Y) {
                     Y.assert(test.overlay.get("boundingBox").hasClass(test.overlay.getClassName("hidden")), "Overlay should have hidden class");
                 }, 300);
             },
+            
             'disabling styleOverride should work' : function() {
                 var test = this;
                 
@@ -112,6 +113,51 @@ YUI.add("overlay-transition-tests", function(Y) {
                     Y.assert(test.overlay.get("boundingBox").getComputedStyle("opacity") == 1, "Opacity should be 1");
                     Y.assert(!test.overlay.get("boundingBox").hasClass(test.overlay.getClassName("hidden")), "Overlay shouldn't have hidden class");
                 }, 300);
+            },
+            
+            'specifying a duration should work' : function() {
+                var test = this,
+                    opacity;
+                
+                this.overlay.plug(Y.Plugin.TransitionOverlay, { duration : 1 });
+                
+                this.overlay.show();
+                
+                Y.later(300, null, function() {
+                    opacity = test.overlay.get("boundingBox").getComputedStyle("opacity");
+                    
+                    Y.assert(test.overlay.get("visible"), "Overlay should be visible");
+                    Y.assert(opacity > 0 && opacity < 1, "Opacity shouldn't be 1");
+                    Y.assert(!test.overlay.get("boundingBox").hasClass(test.overlay.getClassName("hidden")), "Overlay shouldn't have hidden class");
+                });
+                
+                this.wait(function() {
+                    Y.assert(test.overlay.get("boundingBox").getComputedStyle("opacity") == 1, "Opacity shouldn't be 1");
+                }, 1100);
+            },
+            
+            'setting the easing attribute should not break things' : function() {
+                var test = this,
+                    opacity;
+                
+                this.overlay.plug(Y.Plugin.TransitionOverlay, { easing : "linear" });
+                
+                this.overlay.show();
+                
+                Y.later(100, null, function() {
+                    opacity = test.overlay.get("boundingBox").getComputedStyle("opacity");
+                    
+                    Y.assert(opacity > 0 && opacity < 1, "Opacity shouldn't be 1");
+                });
+                
+                Y.later(200, null, function() {
+                    opacity = test.overlay.get("boundingBox").getComputedStyle("opacity");
+                    
+                    Y.assert(opacity > 0 && opacity < 1, "Opacity shouldn't be 1");
+                });
+                
+                //no-op to give transition time to complete
+                this.wait(function() { }, 300);
             }
         }));
 }, "@VERSION@", { requires : [ "gallery-overlay-transition", "test" ] });
