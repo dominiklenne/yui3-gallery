@@ -10,10 +10,11 @@ YUI.add("gallery-overlay-transition", function(Y) {
 
         initializer : function(config) {
             this.doBefore("_uiSetVisible", this._uiAnimSetVisible); // Override default _uiSetVisible method
-
-            var host = this.get("host"),
-                bb = host.get("boundingBox"),
-                duration = this.get("duration");
+            
+            this._host = this.get("host");
+            this._bb = this._host.get("boundingBox");
+            
+            var duration = this.get("duration");
             
             this.publish("start", { preventable : false });
             this.publish("end",   { preventable : false });
@@ -23,7 +24,7 @@ YUI.add("gallery-overlay-transition", function(Y) {
             
             //if the first visible change is from hidden to showing, handle that
             if(this.get("styleOverride")) {
-                host.once("visibleChange", function(o) {
+                this._host.once("visibleChange", function(o) {
                     if(o.newVal && !o.prevVal) {
                         this._applyDefaultStyle();
                     }
@@ -32,44 +33,43 @@ YUI.add("gallery-overlay-transition", function(Y) {
         },
 
         destructor : function() {
-            var styles = this._styleCache,
-                bbox = this.get("host").get("boundingBox");
+            var styles = this._styleCache;
             
-            this._argsShow = this._argsHide = styles = null;
+            this._argsShow = this._host = this._bb = this._argsHide = styles = null;
         },
         
         _applyDefaultStyle : function() {
             var hide = this.get("hide"),
-                host = this.get("host"),
-                bbox = host.get("boundingBox");
+                bb = this._bb;
             
             //cache the previous versions of our style
             Y.each(hide, Y.bind(function(v, p) {
-                this._styleCache[p] = bbox.getComputedStyle(p);
+                this._styleCache[p] = bb.getComputedStyle(p);
             }, this));
             
             //apply default hidden style
-            if(!host.get("visible")) {
-                bbox.setStyles(hide);
+            if(!this._host.get("visible")) {
+                bb.setStyles(hide);
             }
         },
         
         _uiAnimSetVisible : function(val) {
-            var host = this.get("host");
+            var host = this._host,
+                showing;
             
             if (host.get("rendered")) {
-                this._showing = val;
+                showing = this._showing = val;
                 
-                this.fire("start", this._showing);
+                this.fire("start", showing);
                 
-                if(this._showing) {
+                if(showing) {
                     this._uiSetVisible(true);
                 }
                 
-                host.get("boundingBox").transition((val) ? this._argsShow : this._argsHide, Y.bind(function() {
-                    this.fire("end", this._showing);
+                this._bb.transition((val) ? this._argsShow : this._argsHide, Y.bind(function() {
+                    this.fire("end", showing);
                 
-                    if(!this._showing) {
+                    if(!showing) {
                         this._uiSetVisible(false);
                     }
                 }, this));
@@ -82,9 +82,7 @@ YUI.add("gallery-overlay-transition", function(Y) {
          * The original Widget _uiSetVisible implementation
          */
         _uiSetVisible : function(val) {
-            var host = this.get("host");
-            
-            host.get("boundingBox").toggleClass(host.getClassName("hidden"), !val);
+            this._bb.toggleClass(this._host.getClassName("hidden"), !val);
         }
     }, {
         NS : "transitionPlugin",
