@@ -4,8 +4,6 @@ YUI.add("gallery-overlay-transition", function(Y) {
     Y.Plugin.TransitionOverlay = Y.Base.create("overlayTransitionPlugin", Y.Plugin.Base, [], {
 
         _showing : false,
-        _argsShow : null,
-        _argsHide : null,
         _styleCache : {},
 
         initializer : function(config) {
@@ -14,13 +12,8 @@ YUI.add("gallery-overlay-transition", function(Y) {
             this._host = this.get("host");
             this._bb = this._host.get("boundingBox");
             
-            var duration = this.get("duration");
-            
             this.publish("start", { preventable : false });
             this.publish("end",   { preventable : false });
-            
-            this._argsShow = Y.merge({ duration : duration }, this.get("show"));
-            this._argsHide = Y.merge({ duration : duration }, this.get("hide"));
             
             //if the first visible change is from hidden to showing, handle that
             if(this.get("styleOverride")) {
@@ -31,11 +24,9 @@ YUI.add("gallery-overlay-transition", function(Y) {
                 }, this);
             }
         },
-
+        
         destructor : function() {
-            var styles = this._styleCache;
-            
-            this._argsShow = this._host = this._bb = this._argsHide = styles = null;
+            this._host = this._bb = null;
         },
         
         _applyDefaultStyle : function() {
@@ -58,18 +49,18 @@ YUI.add("gallery-overlay-transition", function(Y) {
                 showing;
             
             if (host.get("rendered")) {
-                showing = this._showing = val;
+                this._showing = val;
                 
-                this.fire("start", showing);
+                this.fire("start", val);
                 
-                if(showing) {
+                if(val) {
                     this._uiSetVisible(true);
                 }
                 
-                this._bb.transition((val) ? this._argsShow : this._argsHide, Y.bind(function() {
-                    this.fire("end", showing);
+                this._bb.transition((val) ? this.get("show") : this.get("hide"), Y.bind(function() {
+                    this.fire("end", val);
                 
-                    if(!showing) {
+                    if(!val) {
                         this._uiSetVisible(false);
                     }
                 }, this));
