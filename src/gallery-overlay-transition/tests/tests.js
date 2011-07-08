@@ -24,8 +24,6 @@ YUI.add("overlay-transition-tests", function(Y) {
             'default should adjust opacity' : function() {
                 this.overlay.plug(plugin);
                 
-                console.log(this.overlay.transitionPlugin.getAttrs()); //TODO: REMOVE DEBUGGING
-                
                 Y.Assert.areEqual(1, this.overlay.transitionPlugin.get("show.opacity"));
                 Y.Assert.areEqual(0, this.overlay.transitionPlugin.get("hide.opacity"));
             },
