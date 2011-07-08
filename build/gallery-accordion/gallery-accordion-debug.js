@@ -26,6 +26,7 @@ var Lang = Y.Lang,
 
     BEFOREITEMADD = "beforeItemAdd",
     ITEMADDED = "itemAdded",
+    ITEMCHOSEN = 'itemChosen',
     BEFOREITEMREMOVE = "beforeItemRemove",
     ITEMREMOVED = "itemRemoved",
     BEFOREITEMERESIZED = "beforeItemResized",
@@ -71,6 +72,163 @@ var Lang = Y.Lang,
  */
 
 Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
+
+    /**
+     * Signals the beginning of adding an item to the Accordion.
+     *
+     * @event beforeItemAdd
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being added</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been added to the Accordion.
+     *
+     * @event itemAdded
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been added</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals the beginning of removing an item.
+     *
+     * @event beforeItemRemove
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being removed</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been removed from Accordion.
+     *
+     * @event itemRemoved
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been removed</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals the beginning of resizing an item.
+     *
+     * @event beforeItemResized
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being resized</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been resized.
+     *
+     * @event itemResized
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been resized</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals the beginning of expanding an item
+     *
+     * @event beforeItemExpand
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being expanded</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals the beginning of collapsing an item
+     *
+     * @event beforeItemCollapse
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being collapsed</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been expanded
+     *
+     * @event itemExpanded
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been expanded</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been collapsed
+     *
+     * @event itemCollapsed
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been collapsed</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals the beginning of reordering an item
+     *
+     * @event beforeItemReorder
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being reordered</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Fires before the end of item reordering
+     *
+     * @event beforeEndItemReorder
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item being reordered</dd>
+     *  </dl>
+     */
+
+
+    /**
+     * Signals an item has been reordered
+     *
+     * @event itemReordered
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> instance of the item that has been reordered</dd>
+     *  </dl>
+     */
+
+
     /**
      * Initializer lifecycle implementation for the Accordion class. Publishes events,
      * initializes internal properties and subscribes for resize event.
@@ -110,6 +268,18 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
         }
     },
 
+    /**
+     * Binds an event to Accordion's contentBox.
+     *
+     * @method _bindItemChosenEvent
+     * @protected
+     */
+    _bindItemChosenEvent: function(itemChosenEvent) {
+        var contentBox;
+
+        contentBox = this.get( CONTENT_BOX );
+        contentBox.delegate( itemChosenEvent, Y.bind( this._onItemChosenEvent, this ), '.yui3-widget-hd' );
+    },
 
     /**
      * Publishes Accordion's events
@@ -118,166 +288,25 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
      * @protected
      */
     _initEvents: function(){
-
         /**
-         * Signals the beginning of adding an item to the Accordion.
+         * Signals that an item has been chosen by user, i.e. there was interaction with this item.
+         * The developer may prevent the action which follows (expanding, collapsing, closing, etc.) by preventing the default function, bound to this event.
          *
-         * @event beforeItemAdd
+         * @event itemChosen
          * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
          *  <dl>
          *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being added</dd>
+         *          <dd>An <code>AccordionItem</code> item on which user has clicked or pressed key</dd>
+         *      <dt>srcIconAlwaysVisible <code>Boolean</code></dt>
+         *          <dd>True if user has clicked on 'set as always visible' icon</dd>
+         *      <dt>srcIconClose <code>Boolean</code></dt>
+         *          <dd>True if user has clicked on 'close' icon</dd>
          *  </dl>
          */
-        this.publish( BEFOREITEMADD );
-
-        /**
-         * Signals an item has been added to the Accordion.
-         *
-         * @event itemAdded
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been added</dd>
-         *  </dl>
-         */
-        this.publish( ITEMADDED );
-
-        /**
-         * Signals the beginning of removing an item.
-         *
-         * @event beforeItemRemove
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being removed</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREITEMREMOVE );
-
-        /**
-         * Signals an item has been removed from Accordion.
-         *
-         * @event itemRemoved
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been removed</dd>
-         *  </dl>
-         */
-        this.publish( ITEMREMOVED );
-
-        /**
-         * Signals the beginning of resizing an item.
-         *
-         * @event beforeItemResized
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being resized</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREITEMERESIZED );
-
-        /**
-         * Signals an item has been resized.
-         *
-         * @event itemResized
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been resized</dd>
-         *  </dl>
-         */
-        this.publish( ITEMERESIZED );
-
-        /**
-         * Signals the beginning of expanding an item
-         *
-         * @event beforeItemExpand
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being expanded</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREITEMEXPAND );
-
-        /**
-         * Signals the beginning of collapsing an item
-         *
-         * @event beforeItemCollapse
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being collapsed</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREITEMCOLLAPSE );
-
-
-        /**
-         * Signals an item has been expanded
-         *
-         * @event itemExpanded
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been expanded</dd>
-         *  </dl>
-         */
-        this.publish( ITEMEXPANDED );
-
-        /**
-         * Signals an item has been collapsed
-         *
-         * @event itemCollapsed
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been collapsed</dd>
-         *  </dl>
-         */
-        this.publish( ITEMCOLLAPSED );
-
-        /**
-         * Signals the beginning of reordering an item
-         *
-         * @event beforeItemReorder
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being reordered</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREITEMREORDER );
-
-        /**
-         * Fires before the end of item reordering
-         *
-         * @event beforeEndItemReorder
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item being reordered</dd>
-         *  </dl>
-         */
-        this.publish( BEFOREENDITEMREORDER );
-
-
-        /**
-         * Signals an item has been reordered
-         *
-         * @event itemReordered
-         * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
-         *  <dl>
-         *      <dt>item</dt>
-         *          <dd>An <code>AccordionItem</code> instance of the item that has been reordered</dd>
-         *  </dl>
-         */
-        this.publish( ITEMREORDERED );
+        this.publish( ITEMCHOSEN, {
+            defaultFn: this._onItemChosen
+        });
     },
-
 
     /**
      * Contains items for collapsing
@@ -457,12 +486,23 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
      *
      * @method _onItemChosen
      * @protected
-     * @param item {Y.AccordionItem} The item on which user has clicked or pressed key
-     * @param srcIconAlwaysVisible {Boolean} True if the user has clicked on always visible icon
-     * @param srcIconClose {Boolean} True if the user has clicked on close icon
+     * @param event {Event.Facade} An Event Facade object with the following attribute specific properties added:
+     *  <dl>
+     *      <dt>item</dt>
+     *          <dd>An <code>AccordionItem</code> item on which user has clicked or pressed key</dd>
+     *      <dt>srcIconAlwaysVisible {Boolean}</dt>
+     *          <dd>True if user has clicked on 'set as always visible' icon</dd>
+     *      <dt>srcIconClose {Boolean}</dt>
+     *          <dd>True if user has clicked on 'close' icon</dd>
+     *  </dl>
      */
-    _onItemChosen: function( item, srcIconAlwaysVisible, srcIconClose ){
-        var toBeExcluded, alwaysVisible, expanded, collapseOthersOnExpand;
+    _onItemChosen: function( event ){
+        var toBeExcluded, alwaysVisible, expanded, collapseOthersOnExpand,
+            item, srcIconAlwaysVisible, srcIconClose;
+
+        item = event.item;
+        srcIconAlwaysVisible = event.srcIconAlwaysVisible;
+        srcIconClose = event.srcIconClose;
 
         toBeExcluded = {};
         collapseOthersOnExpand = this.get( COLLAPSEOTHERSONEXPAND );
@@ -532,9 +572,10 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
      * @return {Number} The calculated height per strech item
      */
     _adjustStretchItems: function(){
-        var items = this.get( ITEMS ), heightPerStretchItem;
+        var items = this.get( ITEMS ), heightPerStretchItem, forExpanding;
 
         heightPerStretchItem = this._getHeightPerStretchItem();
+        forExpanding = this._forExpanding;
 
         Y.Array.each( items, function( item, index, items ){
             var body, bodyHeight, anim, heightSettings, expanded;
@@ -542,7 +583,7 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
             heightSettings = item.get( CONTENT_HEIGHT );
             expanded      = item.get( EXPANDED );
 
-            if( heightSettings.method === STRETCH && expanded ){
+            if( !forExpanding[ item ] && heightSettings.method === STRETCH && expanded ){
                 anim = this._animations[ item ];
 
                 // stop waiting animation
@@ -1334,7 +1375,7 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
          */
         contentBox.set( "id", srcNodeId );
 
-        itemsDom = srcNode.queryAll( "> ." + C_ITEM );
+        itemsDom = srcNode.all( "> ." + C_ITEM );
 
         itemsDom.each( function( itemNode, index, itemsDom ){
             var newItem;
@@ -1352,18 +1393,26 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
 
 
     /**
-     * Add listener to <code>itemChosen</code> event in Accordion's content box
+     * Add listener(s) to <code>itemChosen</code> event in Accordion's content box.
+     * If itemChosen is an Array, this function will invoke multiple times _bindItemChosenEvent
      *
      * @method bindUI
      * @protected
      */
     bindUI: function(){
-        var contentBox, itemChosenEvent;
+        var i, itemChosenEvent, length;
 
-        contentBox = this.get( CONTENT_BOX );
-        itemChosenEvent = this.get( 'itemChosen' );
+        itemChosenEvent = this.get( ITEMCHOSEN );
 
-        contentBox.delegate( itemChosenEvent, Y.bind( this._onItemChosenEvent, this ), '.yui3-widget-hd' );
+        if( Lang.isArray(itemChosenEvent) ){
+            length = itemChosenEvent.length;
+
+            for( i = 0; i < length; i++ ) {
+                this._bindItemChosenEvent(itemChosenEvent[i]);
+            }
+        } else {
+            this._bindItemChosenEvent(itemChosenEvent);
+        }
     },
 
 
@@ -1388,7 +1437,11 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
         srcIconAlwaysVisible = (iconAlwaysVisible === e.target);
         srcIconClose = (iconClose === e.target);
 
-        this._onItemChosen( item, srcIconAlwaysVisible, srcIconClose );
+        this.fire( ITEMCHOSEN, {
+            item: item,
+            srcIconAlwaysVisible: srcIconAlwaysVisible, 
+            srcIconClose: srcIconClose
+        });
     },
 
 
@@ -1521,7 +1574,7 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
      * @return {Y.AccordionItem} The removed item or null if not found
      */
     removeItem: function( p_item ){
-        var items, bb, item = null, itemIndex;
+        var items, bb, item = null, itemIndex, allowed;
 
         items = this.get( ITEMS );
 
@@ -1534,10 +1587,13 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
         }
 
         if( itemIndex >= 0 ){
-
-            this.fire( BEFOREITEMREMOVE, {
+            allowed = this.fire( BEFOREITEMREMOVE, {
                 item: p_item
             });
+
+            if( !allowed ){
+                return null;
+            }
 
             item = items.splice( itemIndex, 1 )[0];
 
@@ -1656,16 +1712,18 @@ Y.Accordion = Y.Base.create( AccName, Y.Widget, [], {
     ATTRS : {
         /**
          * @description The event on which Accordion should listen for user interactions.
-         * The value can be also mousedown or mouseup. Mousedown event can be used if
-         * drag&drop is not enabled
+         * The value can be also 'mousedown', 'mouseup' or ['mouseenter','click'].
+         * Mousedown event can be used if drag&drop is not enabled.
          *
          * @attribute itemChosen
          * @default click
-         * @type String
+         * @type String|Array
          */
         itemChosen: {
             value: "click",
-            validator: Lang.isString
+            validator: function( value ) {
+                return Lang.isString(value) || Lang.isArray(value);
+            }
         },
 
         /**
@@ -2339,7 +2397,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setIcon: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2353,7 +2411,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setNodeLabel: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2367,7 +2425,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setIconsContainer: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2381,7 +2439,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setIconExpanded: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2395,7 +2453,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setIconAlwaysVisible: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2409,7 +2467,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
      * @protected
      */
     _setIconClose: function( value ){
-        return Y.get( value ) || null;
+        return Y.one( value ) || null;
     },
 
 
@@ -2727,7 +2785,7 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
             }
 
             labelSelector = HEADER_SELECTOR_SUB + C_LABEL;
-            node = srcNode.query( labelSelector );
+            node = srcNode.one( labelSelector );
 
             return (node) ? node.get( INNER_HTML ) : null;
         },
@@ -2899,4 +2957,4 @@ Y.AccordionItem = Y.Base.create( AccItemName, Y.Widget, [Y.WidgetStdMod], {
 
 
 
-}, 'gallery-2010.04.08-12-35' ,{optional:['dd-constrain', 'dd-proxy', 'dd-drop'], requires:['event', 'anim-easing', 'widget', 'widget-stdmod', 'json-parse']});
+}, 'gallery-2011.03.23-22-20' ,{optional:['dd-constrain', 'dd-proxy', 'dd-drop'], requires:['event', 'anim-easing', 'widget', 'widget-stdmod', 'json-parse']});

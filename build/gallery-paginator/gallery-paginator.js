@@ -1,15 +1,5 @@
 YUI.add('gallery-paginator', function(Y) {
 
-/*
-Copyright (c) 2009, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.net/yui/license.txt
-*/
-
-Y.Node.DOM_EVENTS.key =
-{
-	on: Y.Env.evt.plugins.key.on
-};
 "use strict";
 /*
 Copyright (c) 2009, Yahoo! Inc. All rights reserved.
@@ -42,15 +32,6 @@ function Paginator(config) {
 // Static members
 Y.mix(Paginator, {
     NAME: "paginator",
-
-    /**
-     * Incrementing index used to give instances unique ids.
-     * @static
-     * @property Paginator.id
-     * @type number
-     * @private
-     */
-    id : 0,
 
     /**
      * Base of id strings used for ui components.
@@ -216,22 +197,6 @@ Paginator.ATTRS =
         validator : Y.Lang.isBoolean
     },
 
-    /**
-     * Update the UI immediately upon interaction.  If false, changeRequest
-     * subscribers or other external code will need to explicitly set the
-     * new values in the paginator to trigger repaint.
-     * @attribute updateOnChange
-     * @type boolean
-     * @default false
-     * @deprecated use changeRequest listener that calls setState
-     */
-    updateOnChange: {
-        value     : false,
-        validator : Y.Lang.isBoolean
-    },
-
-
-
     // Read only attributes
 
     /**
@@ -241,7 +206,7 @@ Paginator.ATTRS =
      * @final
      */
     id: {
-        value    : Paginator.id++,
+        value    : Y.guid(),
         readOnly : true
     }
 };
@@ -579,12 +544,11 @@ Y.extend(Paginator, Y.Widget,
      * Set the current page to the provided page number if possible.
      * @method setPage
      * @param newPage {number} the new page number
-     * @param silent {boolean} whether to forcibly avoid firing the
-     * changeRequest event
+     * @param silent {boolean} whether to forcibly avoid firing the changeRequest event
      */
     setPage : function (page,silent) {
         if (this.hasPage(page) && page !== this.getCurrentPage()) {
-            if (this.get('updateOnChange') || silent) {
+            if (silent) {
                 this.set('recordOffset', (page - 1) * this.get('rowsPerPage'));
             } else {
                 this.fire('changeRequest',this.getState({'page':page}));
@@ -605,13 +569,12 @@ Y.extend(Paginator, Y.Widget,
      * Set the number of rows per page.
      * @method setRowsPerPage
      * @param rpp {number} the new number of rows per page
-     * @param silent {boolean} whether to forcibly avoid firing the
-     * changeRequest event
+     * @param silent {boolean} whether to forcibly avoid firing the changeRequest event
      */
     setRowsPerPage : function (rpp,silent) {
         if (Paginator.isNumeric(rpp) && +rpp > 0 &&
             +rpp !== this.get('rowsPerPage')) {
-            if (this.get('updateOnChange') || silent) {
+            if (silent) {
                 this.set('rowsPerPage',rpp);
             } else {
                 this.fire('changeRequest',
@@ -638,7 +601,7 @@ Y.extend(Paginator, Y.Widget,
     setTotalRecords : function (total,silent) {
         if (Paginator.isNumeric(total) && +total >= 0 &&
             +total !== this.get('totalRecords')) {
-            if (this.get('updateOnChange') || silent) {
+            if (silent) {
                 this.set('totalRecords',total);
             } else {
                 this.fire('changeRequest',
@@ -666,7 +629,7 @@ Y.extend(Paginator, Y.Widget,
     setStartIndex : function (offset,silent) {
         if (Paginator.isNumeric(offset) && +offset >= 0 &&
             +offset !== this.get('recordOffset')) {
-            if (this.get('updateOnChange') || silent) {
+            if (silent) {
                 this.set('recordOffset',offset);
             } else {
                 this.fire('changeRequest',
@@ -1431,6 +1394,9 @@ Paginator.ui.ItemRangeDropdown.prototype =
 
 		this.page_count = this.span.one('span.yui-item-count');
 
+		this.prev_page_count = -1;
+		this.prev_page_size  = -1;
+		this.prev_rec_count  = -1;
 		this.update();
 
 		return this.span;
@@ -1451,22 +1417,32 @@ Paginator.ui.ItemRangeDropdown.prototype =
 
 		var page    = this.paginator.getCurrentPage();
 		var count   = this.paginator.getTotalPages();
-		var options = Y.Node.getDOMNode(this.menu).options;
+		var size    = this.paginator.getRowsPerPage();
+		var recs    = this.paginator.getTotalRecords();
 
-		options.length = 0;
-		for (var i=1; i<=count; i++)
+		if (count != this.prev_page_count ||
+			size  != this.prev_page_size  ||
+			recs  != this.prev_rec_count)
 		{
-			var range = this.paginator.getPageRecords(i);
+			var options    = Y.Node.getDOMNode(this.menu).options;
+			options.length = 0;
 
-			options[i-1] = new Option((range[0]+1) + ' - ' + (range[1]+1), i);
-			if (i == page)
+			for (var i=1; i<=count; i++)
 			{
-				this.menu.set('selectedIndex', i-1);
+				var range = this.paginator.getPageRecords(i);
+
+				options[i-1] = new Option((range[0]+1) + ' - ' + (range[1]+1), i);
 			}
+
+			this.page_count.set('innerHTML', recs);
+
+			this.prev_page_count = count;
+			this.prev_page_size  = size;
+			this.prev_rec_count  = recs;
 		}
 
 		this.span.set('className', this.paginator.get('itemRangeDropdownClass'));
-		this.page_count.set('innerHTML', this.paginator.getTotalRecords());
+		this.menu.set('selectedIndex', page-1);
 	},
 
 	_onChange: function(e)
@@ -2434,6 +2410,80 @@ Paginator.ui.RowsPerPageDropdown.prototype = {
         }
     }
 };
+/**********************************************************************
+ * Adds per-page error notification to Paginator.ui.PageLinks.
+ *
+ * @module gallery-paginator
+ * @class Paginator.ui.ValidationPageLinks
+ * @constructor
+ * @param p {Pagintor} Paginator instance to attach to
+ */
+
+Paginator.ui.ValidationPageLinks = function(
+	/* Paginator */	p)
+{
+	Paginator.ui.ValidationPageLinks.superclass.constructor.call(this, p);
+
+    p.after('pageStatusChange', this.rebuild, this);
+};
+
+var vpl_status_prefix = 'yui3-has';
+
+/**
+ * Array of status strings for each page.  If the status value for a page
+ * is not empty, it is used to build a CSS class for the page:
+ * yui3-has&lt;status&gt;
+ * 
+ * @attribute pageStatus
+ */
+Paginator.ATTRS.pageStatus =
+{
+	value:     [],
+	validator: Y.Lang.isArray
+};
+
+Y.extend(Paginator.ui.ValidationPageLinks, Paginator.ui.PageLinks, 
+{ 
+	update: function(e)
+	{
+		if (e && e.prevVal === e.newVal)
+		{
+			return;
+		}
+
+		var currentPage	= this.paginator.getCurrentPage();
+
+		var curr_markup = '<span class="{link} {curr} {status}">{label}</span>';
+		var link_markup = '<a href="#" class="{link} {status}" page="{page}">{label}</a>';
+
+		if (this.current !== currentPage || !currentPage || e.rebuild)
+		{
+			var linkClass    = this.paginator.get('pageLinkClass');
+			var status       = this.paginator.get('pageStatus');
+			var labelBuilder = this.paginator.get('pageLabelBuilder');
+
+			var range =
+				Paginator.ui.PageLinks.calculateRange(
+					currentPage, this.paginator.getTotalPages(), this.paginator.get('pageLinks'));
+
+			var content = '';
+			for (var i=range[0]; i<=range[1]; i++)
+			{
+				content += Y.Lang.sub(i === currentPage ? curr_markup : link_markup,
+				{
+					link:   linkClass,
+					curr:   (i === currentPage ? this.paginator.get('currentPageClass') : ''),
+					status: status[i-1] ? vpl_status_prefix + status[i-1] : '',
+					page:   i,
+					label:  labelBuilder(i, this.paginator)
+				});
+			}
+
+			this.container.set('innerHTML', content);
+		}
+	}
+	
+});
 
 
-}, 'gallery-2010.04.02-17-26' ,{requires:['widget','event-key','substitute']});
+}, 'gallery-2011.04.13-22-38' ,{requires:['widget','event-key','substitute'], skinnable:true});
