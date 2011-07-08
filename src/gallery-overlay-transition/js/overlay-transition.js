@@ -79,14 +79,18 @@ Y.Plugin.TransitionOverlay = Y.Base.create("overlayTransitionPlugin", Y.Plugin.B
         this._bb.toggleClass(this._host.getClassName("hidden"), !val);
     },
     
-    _durationMerge : function(value) {
-        return Y.merge({ duration : this.get("duration") }, value);
+    _optionsMerge : function(value) {
+        return Y.merge(this.getAttrs([ "duration", "easing" ]), value);
     }
 }, {
     NS : "transitionPlugin",
     ATTRS : {
         duration : { 
             value : 0.25 
+        },
+        
+        easing : {
+            value : "ease-in"
         },
         
         styleOverride : { 
@@ -98,14 +102,14 @@ Y.Plugin.TransitionOverlay = Y.Base.create("overlayTransitionPlugin", Y.Plugin.B
             value : { 
                 opacity : 0 
             },
-            setter : "_durationMerge"
+            setter : "_optionsMerge"
         },
 
         show : {
             value : { 
                 opacity : 1 
             },
-            setter : "_durationMerge"
+            setter : "_optionsMerge"
         }
     }
 });

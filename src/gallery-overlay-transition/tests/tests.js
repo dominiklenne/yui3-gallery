@@ -22,16 +22,12 @@ YUI.add("overlay-transition-tests", function(Y) {
             },
             
             'default should adjust opacity' : function() {
-                this.overlay.get("boundingBox").setStyle({ opacity : 0 });
-                
                 this.overlay.plug(plugin);
-                this.overlay.show();
                 
-                this.wait(function() {
-                    var opacity = parseInt(this.overlay.get("boundingBox").getComputedStyle("opacity"), 10);
-                    
-                    Y.assert( opacity === 1, "Opacity wasn't 1");
-                }, 1000);
+                console.log(this.overlay.transitionPlugin.getAttrs()); //TODO: REMOVE DEBUGGING
+                
+                Y.Assert.areEqual(1, this.overlay.transitionPlugin.get("show.opacity"));
+                Y.Assert.areEqual(0, this.overlay.transitionPlugin.get("hide.opacity"));
             },
             
             'events should fire as expected' : function() {
@@ -64,33 +60,23 @@ YUI.add("overlay-transition-tests", function(Y) {
                     } 
                 });
                 
-                this.overlay.show();
-                
-                this.wait(function() {
-                    var height = parseInt(this.overlay.get("boundingBox").getComputedStyle("height"), 10);
-                    
-                    Y.assert(height > 0, "Height should be > 0, was " + height);
-                    Y.assert(height < 400, "Height should be less than the max, was " + height);
-                }, 100);
+                Y.Assert.areEqual("400px", this.overlay.transitionPlugin.get("show.height"));
+                Y.Assert.areEqual(0, this.overlay.transitionPlugin.get("hide.height"));
             },
             
-            'custom duration should work' : function() {
+            'global attributes should be mixed into show/hide properly' : function() {
                 this.overlay.plug(plugin, {
-                    duration : 1
+                    duration : 1,
+                    easing : "ease-out"
                 });
                 
-                this.overlay.show();
-                
-                this.wait(function() {
-                    Y.assert(this.overlay.get("visible"), "Overlay should be visible");
-                    Y.assert(this.overlay.get("boundingBox").getComputedStyle("opacity") != 1, "Opacity should not be 1");
-                    Y.assert(!this.overlay.get("boundingBox").hasClass(this.overlay.getClassName("hidden")), "Overlay shouldn't have hidden class");
-                }, 500);
+                Y.Assert.areEqual(1, this.overlay.transitionPlugin.get("show.duration"));
+                Y.Assert.areEqual(1, this.overlay.transitionPlugin.get("hide.duration"));
+                Y.Assert.areEqual("ease-out", this.overlay.transitionPlugin.get("show.easing"));
+                Y.Assert.areEqual("ease-out", this.overlay.transitionPlugin.get("hide.easing"));
             },
             
             'per-transition duration should override global duration' : function() {
-                var start = 
-                
                 this.overlay.plug(plugin, {
                     show : {
                         opacity : 1,
@@ -98,16 +84,10 @@ YUI.add("overlay-transition-tests", function(Y) {
                     }
                 });
                 
-                this.overlay.show();
-                
-                this.wait(function() {
-                    Y.assert(this.overlay.get("visible"), "Overlay should be visible");
-                    Y.assert(this.overlay.get("boundingBox").getComputedStyle("opacity") != 1, "Opacity should not be 1");
-                    Y.assert(!this.overlay.get("boundingBox").hasClass(this.overlay.getClassName("hidden")), "Overlay shouldn't have hidden class");
-                }, 500);
+                Y.Assert.areEqual(1, this.overlay.transitionPlugin.get("show.duration"));
             },
             
-            'overlay.show() should work' : function() {
+            'overlay.show() should transition the form' : function() {
                 this.overlay.plug(plugin);
                 
                 this.overlay.show();
@@ -119,7 +99,7 @@ YUI.add("overlay-transition-tests", function(Y) {
                 }, 500);
             },
             
-            'overlay.hide() should work' : function() {
+            'overlay.hide() should transition the form' : function() {
                 this.overlay.plug(plugin, { 
                     show : {
                         duration : 0
