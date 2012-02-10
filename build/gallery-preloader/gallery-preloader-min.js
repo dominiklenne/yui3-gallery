@@ -1,0 +1,1 @@
+YUI.add("gallery-preloader",function(a){a.preloader=function(d){var c=a.merge(a.config,{require:a.Lang.isArray(d)?d:a.Array(arguments,0,true)}),b=new a.Loader(c),e=b.resolve(true),f=e.js.concat(e.css);a.preload(f);return a;};},"@VERSION@",{requires:["yui","gallery-preload"]});
